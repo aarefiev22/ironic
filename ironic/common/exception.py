@@ -608,3 +608,7 @@ class CIMCException(IronicException):
 
 class OneViewError(IronicException):
     _msg_fmt = _("OneView exception occurred. Error: %(error)s")
+
+
+class LibvirtError(IronicException):
+    _msg_fmt = _("Libvirt call failed: %(err)s.")

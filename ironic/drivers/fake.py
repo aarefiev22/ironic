@@ -40,6 +40,7 @@ from ironic.drivers.modules import ipmitool
 from ironic.drivers.modules.irmc import management as irmc_management
 from ironic.drivers.modules.irmc import power as irmc_power
 from ironic.drivers.modules import iscsi_deploy
+from ironic.drivers.modules import lib_virt
 from ironic.drivers.modules.msftocs import management as msftocs_management
 from ironic.drivers.modules.msftocs import power as msftocs_power
 from ironic.drivers.modules.oneview import common as oneview_common
@@ -104,6 +105,15 @@ class FakeSSHDriver(base.BaseDriver):
         self.power = ssh.SSHPower()
         self.deploy = fake.FakeDeploy()
         self.management = ssh.SSHManagement()
+
+
+class FakeLibvirtDriver(base.BaseDriver):
+    """Example implementation of a Driver."""
+
+    def __init__(self):
+        self.power = lib_virt.LibvirtPower()
+        self.deploy = fake.FakeDeploy()
+        self.management = lib_virt.LibvirtManagement()
 
 
 class FakeIPMINativeDriver(base.BaseDriver):

@@ -41,6 +41,7 @@ from ironic.drivers.modules import ipmitool
 from ironic.drivers.modules.irmc import management as irmc_management
 from ironic.drivers.modules.irmc import power as irmc_power
 from ironic.drivers.modules import iscsi_deploy
+from ironic.drivers.modules import lib_virt
 from ironic.drivers.modules.msftocs import management as msftocs_management
 from ironic.drivers.modules.msftocs import power as msftocs_power
 from ironic.drivers.modules import pxe
@@ -106,6 +107,29 @@ class PXEAndSSHDriver(base.BaseDriver):
         self.vendor = iscsi_deploy.VendorPassthru()
         self.inspect = inspector.Inspector.create_if_enabled(
             'PXEAndSSHDriver')
+        self.raid = agent.AgentRAID()
+
+
+class PXEAndLibvirtDriver(base.BaseDriver):
+    """PXE + Libvirt driver.
+
+    NOTE: This driver is meant only for testing environments.
+
+    This driver implements the `core` functionality, combining
+    :class:`ironic.drivers.modules.lib_virt.Libvirt` for power on/off and
+    reboot of virtual machines tunneled over Libvirt API, with
+    :class:`ironic.drivers.modules.iscsi_deploy.ISCSIDeploy` for
+    image deployment. Implementations are in those respective
+    classes; this class is merely the glue between them.
+    """
+    def __init__(self):
+        self.power = lib_virt.LibvirtPower()
+        self.boot = pxe.PXEBoot()
+        self.deploy = iscsi_deploy.ISCSIDeploy()
+        self.management = lib_virt.LibvirtManagement()
+        self.vendor = iscsi_deploy.VendorPassthru()
+        self.inspect = inspector.Inspector.create_if_enabled(
+            'PXEAndLibvirtDriver')
         self.raid = agent.AgentRAID()
 
 

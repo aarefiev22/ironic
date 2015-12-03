@@ -62,6 +62,17 @@ def get_test_ssh_info(auth_type='password'):
     return result
 
 
+def get_test_libvirt_driver_info(auth_type='ssh_key'):
+    if auth_type == 'ssh_key':
+        return {
+            'ssh_key_filename': '/test/key/file'
+        }
+    elif auth_type == 'sasl':
+        return {
+            'sasl_username': 'admin',
+            'sasl_password': 'admin'
+        }
+
 def get_test_pxe_driver_info():
     return {
         "deploy_kernel": "glance://deploy_kernel_uuid",

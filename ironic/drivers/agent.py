@@ -26,6 +26,7 @@ from ironic.drivers.modules import iboot
 from ironic.drivers.modules import inspector
 from ironic.drivers.modules import ipminative
 from ironic.drivers.modules import ipmitool
+from ironic.drivers.modules import lib_virt
 from ironic.drivers.modules import pxe
 from ironic.drivers.modules import ssh
 from ironic.drivers.modules.ucs import management as ucs_mgmt
@@ -121,6 +122,30 @@ class AgentAndSSHDriver(base.BaseDriver):
         self.raid = agent.AgentRAID()
         self.inspect = inspector.Inspector.create_if_enabled(
             'AgentAndSSHDriver')
+
+
+class AgentAndLibvirtDriver(base.BaseDriver):
+    """Agent + Libvirt driver.
+
+    NOTE: This driver is meant only for testing environments.
+
+    This driver implements the `core` functionality, combining
+    :class:`ironic.drivers.modules.lib_virt.LibvirtPower` (for power on/off and
+    reboot of virtual machines tunneled over Libvirt API), with
+    :class:`ironic.drivers.modules.agent.AgentDeploy` (for image
+    deployment). Implementations are in those respective classes; this class
+    is merely the glue between them.
+    """
+
+    def __init__(self):
+        self.power = lib_virt.LibvirtPower()
+        self.boot = pxe.PXEBoot()
+        self.deploy = agent.AgentDeploy()
+        self.management = lib_virt.LibvirtManagement()
+        self.vendor = agent.AgentVendorInterface()
+        self.raid = agent.AgentRAID()
+        self.inspect = inspector.Inspector.create_if_enabled(
+            'AgentAndLibvirtDriver')
 
 
 class AgentAndVirtualBoxDriver(base.BaseDriver):
